@@ -1,0 +1,21 @@
+[Unit]
+Description=Gunicorn daemon for elderly tracking system
+After=network.target
+
+[Service]
+Type=notify
+User=root
+Group=root
+WorkingDirectory=/root/Project/backend
+Environment="PATH=/root/Project/backend/venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=config.settings_prod"
+ExecStart=/root/Project/backend/venv/bin/gunicorn \
+    --config /root/Project/backend/gunicorn_config.py \
+    config.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

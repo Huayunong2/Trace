@@ -1,0 +1,47 @@
+<!--pages/elderly/add.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="large-text" style="font-weight: bold; margin-bottom: 30rpx;">添加老人信息</view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">姓名 *</view>
+      <input placeholder="请输入姓名" value="{{formData.name}}" data-field="name" bindinput="onInput"/>
+    </view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">年龄</view>
+      <input placeholder="请输入年龄" type="number" value="{{formData.age}}" data-field="age" bindinput="onInput"/>
+    </view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">性别</view>
+      <radio-group bindchange="onGenderChange">
+        <label class="radio-label"><radio value="male" checked="{{formData.gender === 'male'}}"/> 男</label>
+        <label class="radio-label"><radio value="female" checked="{{formData.gender === 'female'}}"/> 女</label>
+      </radio-group>
+    </view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">紧急联系人 *</view>
+      <input placeholder="请输入紧急联系人姓名" value="{{formData.emergency_contact}}" data-field="emergency_contact" bindinput="onInput"/>
+    </view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">紧急联系电话 *</view>
+      <input placeholder="请输入紧急联系电话" type="number" value="{{formData.emergency_phone}}" data-field="emergency_phone" bindinput="onInput"/>
+    </view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">常住地址</view>
+      <input placeholder="请输入常住地址" value="{{formData.address}}" data-field="address" bindinput="onInput"/>
+    </view>
+    
+    <view style="margin-bottom: 30rpx;">
+      <view style="margin-bottom: 10rpx; color: #666;">病史</view>
+      <textarea placeholder="请输入病史信息" value="{{formData.medical_history}}" data-field="medical_history" bindinput="onInput" style="min-height: 150rpx;"/>
+    </view>
+    
+    <button class="btn btn-primary" style="width: 100%;" bindtap="submit">提交</button>
+  </view>
+</view>
+

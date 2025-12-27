@@ -1,0 +1,21 @@
+[Unit]
+Description=Celery beat scheduler for elderly tracking system
+After=network.target redis.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/Project/backend
+Environment="PATH=/root/Project/backend/venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=config.settings_prod"
+ExecStart=/root/Project/backend/venv/bin/celery -A config.celery beat \
+    --pidfile=/root/Project/backend/logs/celerybeat.pid \
+    --logfile=/root/Project/backend/logs/celerybeat.log \
+    --loglevel=info
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,51 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-info-card">
+    <view class="user-avatar-wrapper">
+      <image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" class="user-avatar" mode="aspectFill"></image>
+      <image wx:else src="/images/avatar-default.png" class="user-avatar" mode="aspectFill"></image>
+    </view>
+    <view class="user-info">
+      <view class="user-name">{{userInfo && userInfo.username || '未登录'}}</view>
+      <view wx:if="{{userInfo && userInfo.role}}" class="user-role">
+        <text class="role-badge role-{{userInfo.role}}">
+          {{userInfo.role === 'guardian' ? '监护人' : userInfo.role === 'elderly' ? '老人' : userInfo.role === 'community_admin' ? '社区管理员' : userInfo.role === 'system_admin' ? '系统管理员' : '未知'}}
+        </text>
+      </view>
+      <view wx:if="{{userInfo && userInfo.phone}}" class="user-phone">
+        📱 {{userInfo.phone}}
+      </view>
+      <view class="user-id">ID: {{userInfo && userInfo.id || '--'}}</view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="card menu-card">
+    <view class="menu-item" bindtap="loadUserInfo">
+      <image src="/images/refresh.png" class="menu-icon-img" mode="aspectFit"></image>
+      <text class="menu-text">刷新信息</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <!-- 测试阶段：角色切换 -->
+    <view wx:if="{{isTestMode}}" class="menu-item" bindtap="switchRole">
+      <text class="menu-icon">🔄</text>
+      <text class="menu-text">切换角色（测试）</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <!-- 系统管理（仅系统管理员可见） -->
+    <view wx:if="{{userInfo && userInfo.role === 'system_admin'}}" class="menu-item" bindtap="goToSystemAdmin">
+      <text class="menu-icon">⚙️</text>
+      <text class="menu-text">系统管理</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="card">
+    <button class="logout-btn" bindtap="logout">
+      退出登录
+    </button>
+  </view>
+</view>
+

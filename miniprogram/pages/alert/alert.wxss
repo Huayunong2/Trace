@@ -1,0 +1,202 @@
+/* pages/alert/alert.wxss */
+
+/* 筛选按钮组 */
+.filter-group {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  color: #666;
+}
+
+.filter-btn-active {
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+}
+
+/* 预警卡片 */
+.alert-card {
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.alert-card:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.alert-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.alert-title-critical {
+  color: #E74C3C;
+}
+
+.alert-title-high {
+  color: #FF9800;
+}
+
+.alert-title-normal {
+  color: #4A90E2;
+}
+
+.alert-message {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+}
+
+.alert-meta {
+  font-size: 26rpx;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.status-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  color: #fff;
+}
+
+.status-handled {
+  background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+  color: #fff;
+}
+
+/* 位置信息卡片 */
+.location-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-top: 20rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+/* 批量操作按钮区域 */
+.batch-action-section {
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #e9ecef;
+}
+
+.batch-handle-item {
+  margin-bottom: 16rpx;
+}
+
+.batch-handle-item:last-child {
+  margin-bottom: 0;
+}
+
+.btn-batch-handle {
+  width: 100%;
+  padding: 24rpx 20rpx;
+  background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4rpx 16rpx rgba(39, 174, 96, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.btn-batch-handle:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(39, 174, 96, 0.3);
+}
+
+.btn-batch-clear {
+  width: 100%;
+  padding: 24rpx 20rpx;
+  background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4rpx 16rpx rgba(231, 76, 60, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.btn-batch-clear:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(231, 76, 60, 0.3);
+}
+
+.batch-handle-icon {
+  font-size: 32rpx;
+  font-weight: bold;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.batch-handle-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  letter-spacing: 0.5rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 按钮样式 */
+.btn {
+  padding: 20rpx 32rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  text-align: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  color: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(74, 144, 226, 0.3);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+  color: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(39, 174, 96, 0.3);
+}
+
+.btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}

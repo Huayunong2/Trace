@@ -1,0 +1,64 @@
+<!--pages/admin/users/users.wxml-->
+<view class="container">
+  <!-- 搜索和过滤 -->
+  <view class="card filter-card">
+    <view class="search-box">
+      <input class="search-input" placeholder="搜索用户名" value="{{searchKeyword}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch"/>
+      <button class="search-btn" bindtap="onSearch">搜索</button>
+    </view>
+    <view class="filter-box">
+      <picker mode="selector" range="{{['全部', '监护人', '老人', '系统管理员']}}" value="{{roleFilter === 'all' ? 0 : roleFilter === 'guardian' ? 1 : roleFilter === 'elderly' ? 2 : roleFilter === 'system_admin' ? 3 : 0}}" bindchange="onRoleFilterChange">
+        <view class="filter-item">
+          <text>角色筛选: {{roleFilter === 'all' ? '全部' : roleFilter === 'guardian' ? '监护人' : roleFilter === 'elderly' ? '老人' : roleFilter === 'system_admin' ? '系统管理员' : '全部'}}</text>
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 用户列表 -->
+  <view class="card">
+    <view class="card-header">
+      <view class="card-title">用户列表</view>
+      <view class="header-actions">
+        <button class="btn-add" bindtap="addUser">+ 添加用户</button>
+        <text class="refresh-btn" bindtap="refresh">🔄 刷新</text>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    
+    <view wx:elif="{{users.length === 0}}" class="empty-state">
+      <view class="empty-icon">👥</view>
+      <view class="empty-text">暂无用户</view>
+    </view>
+    
+    <view wx:else class="user-list">
+      <view wx:for="{{users}}" wx:key="id" class="user-item">
+        <view class="user-main" bindtap="viewUserDetail" data-id="{{item.id}}">
+          <view class="user-avatar">
+            <image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill"></image>
+            <image wx:else src="/images/avatar-default.png" mode="aspectFill"></image>
+          </view>
+          <view class="user-info">
+            <view class="user-name">{{item.username}}</view>
+            <view class="user-meta">
+              <text class="role-badge role-{{item.role}}">
+                {{item.role === 'guardian' ? '监护人' : item.role === 'elderly' ? '老人' : item.role === 'system_admin' ? '系统管理员' : '未知'}}
+              </text>
+              <text wx:if="{{item.phone}}" class="phone">{{item.phone}}</text>
+            </view>
+          </view>
+          <view class="user-arrow">›</view>
+        </view>
+        <view class="user-actions">
+          <button class="btn-delete-small" bindtap="deleteUser" data-id="{{item.id}}" data-user="{{item}}">
+            <image src="/images/delete.png" class="btn-icon-small" mode="aspectFit"></image>
+            <text>删除</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

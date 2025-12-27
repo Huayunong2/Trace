@@ -1,0 +1,227 @@
+/* pages/admin/users/users.wxss */
+
+.container {
+  padding: 24rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.filter-card {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.search-box {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.search-input {
+  flex: 1;
+  background: #f8f9fa;
+  padding: 20rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+
+.search-btn {
+  padding: 0 32rpx;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 64rpx;
+}
+
+.filter-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.arrow {
+  color: #999;
+  font-size: 24rpx;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.btn-add {
+  padding: 12rpx 24rpx;
+  background: #4A90E2;
+  color: #fff;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+.card-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.refresh-btn {
+  font-size: 26rpx;
+  color: #4A90E2;
+  padding: 8rpx 16rpx;
+}
+
+.loading, .empty-state {
+  text-align: center;
+  padding: 60rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.5;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  margin-bottom: 16rpx;
+}
+
+.user-main {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.user-item:active .user-main {
+  opacity: 0.7;
+}
+
+.user-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-left: 16rpx;
+}
+
+.btn-delete-small {
+  padding: 8rpx 20rpx;
+  background: #FF5252;
+  color: #fff;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+}
+
+.btn-icon-small {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 24rpx;
+  background: #f0f0f0;
+}
+
+.user-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 24rpx;
+}
+
+.role-badge {
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  line-height: 1.2;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.role-badge.role-guardian {
+  background: #E3F2FD;
+  color: #1976D2;
+}
+
+.role-badge.role-elderly {
+  background: #FFF3E0;
+  color: #F57C00;
+}
+
+.role-badge.role-system_admin {
+  background: #FFEBEE;
+  color: #C62828;
+}
+
+.phone {
+  color: #999;
+}
+
+.user-arrow {
+  font-size: 40rpx;
+  color: #ccc;
+  margin-left: 16rpx;
+}
+

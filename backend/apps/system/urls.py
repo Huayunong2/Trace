@@ -1,0 +1,15 @@
+"""
+系统管理URL配置
+"""
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import SystemConfigViewSet, SystemAdminUserViewSet
+
+router = DefaultRouter()
+router.register(r'configs', SystemConfigViewSet, basename='system-config')
+router.register(r'users', SystemAdminUserViewSet, basename='system-admin-user')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+

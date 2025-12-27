@@ -1,0 +1,88 @@
+<!--pages/elderly/index/index.wxml - 老人角色首页-->
+<view class="container">
+  <!-- 顶部欢迎区域 -->
+  <view class="header-section">
+    <view class="header-content">
+      <view class="greeting-text">您好，{{userInfo && userInfo.username || '老人'}}</view>
+      <view class="subtitle-text">安全守护，让家人放心</view>
+    </view>
+  </view>
+
+  <!-- 设备状态卡片 -->
+  <view class="card device-card">
+    <view class="card-title">设备状态</view>
+    <view wx:if="{{device}}" class="device-info">
+      <view class="device-status">
+        <image wx:if="{{device.is_active}}" src="{{device.status === 'online' ? '/images/status-online.png' : device.status === 'low_battery' ? '/images/status-battery-low.png' : '/images/status-offline.png'}}" class="status-icon"></image>
+        <text class="status-text">{{device.is_active ? (device.status === 'online' ? '设备在线' : device.status === 'low_battery' ? '低电量' : '设备离线') : '等待激活'}}</text>
+      </view>
+      <view wx:if="{{device.is_active}}" class="device-battery">
+        <text>电量：{{device.battery_level || 100}}%</text>
+      </view>
+      <view class="device-name">
+        <text>{{device.name || '定位设备'}}</text>
+      </view>
+      <view class="device-id">
+        <text>设备ID：{{device.device_id || '未生成'}}</text>
+      </view>
+      
+      <!-- 绑定状态显示 -->
+      <view wx:if="{{device && device.device_id}}" class="binding-status-section">
+        <view wx:if="{{device.elderly && device.elderly.guardian}}" class="bound-status">
+          <text class="status-icon">✅</text>
+          <text class="status-text">已绑定监护人：{{device.elderly.guardian.username || '监护人'}}</text>
+        </view>
+        <view wx:else class="unbound-section">
+          <view class="unbound-tip">
+            <text>设备ID已生成，请复制设备ID提供给监护人进行绑定</text>
+          </view>
+          
+          <!-- 设备ID显示区域 -->
+          <view class="device-id-display">
+            <view class="device-id-header">
+              <text class="device-id-label">设备ID：</text>
+              <button class="copy-btn" bindtap="copyDeviceId" data-id="{{device.device_id}}">复制</button>
+            </view>
+            <view class="device-id-value" selectable>{{device.device_id}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="no-device">
+      <text>正在生成设备...</text>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="card action-card">
+    <view class="card-title">快捷操作</view>
+    <view class="action-buttons">
+      <button class="action-btn sos-btn" bindtap="sendSOS" disabled="{{!device || !device.device_id || !device.elderly || !device.elderly.guardian}}">
+        <view class="btn-icon">🚨</view>
+        <text class="btn-text">紧急求救</text>
+      </button>
+      <button class="action-btn location-btn" bindtap="viewLocation" disabled="{{!location}}">
+        <view class="btn-icon">📍</view>
+        <text class="btn-text">查看位置</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 位置信息 -->
+  <view wx:if="{{location}}" class="card location-card">
+    <view class="card-title">当前位置</view>
+    <view class="location-info">
+      <text>纬度：{{location.latitudeStr || location.latitude}}</text>
+      <text>经度：{{location.longitudeStr || location.longitude}}</text>
+    </view>
+    <view class="location-time">
+      <text>位置已上传</text>
+    </view>
+  </view>
+
+  <!-- 刷新和退出登录按钮 -->
+  <view class="action-section">
+    <button class="refresh-btn" bindtap="refresh">🔄 刷新数据</button>
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+</view>

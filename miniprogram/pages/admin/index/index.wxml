@@ -1,0 +1,85 @@
+<!--pages/admin/index/index.wxml-->
+<view class="container">
+  <view class="header-section">
+    <view class="header-content">
+      <view class="greeting-text">系统管理</view>
+      <view class="subtitle-text">系统配置与用户管理</view>
+    </view>
+  </view>
+
+  <!-- 统计信息卡片 -->
+  <view class="card statistics-card">
+    <view class="card-header">
+      <view class="card-title">系统统计</view>
+      <text class="refresh-btn" bindtap="refresh">🔄 刷新</text>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    
+    <view wx:elif="{{statistics}}" class="statistics-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.total_users}}</view>
+        <view class="stat-label">总用户数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.guardians}}</view>
+        <view class="stat-label">监护人</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.elderly}}</view>
+        <view class="stat-label">老人</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.total_elderly_profiles}}</view>
+        <view class="stat-label">老人档案</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.total_devices}}</view>
+        <view class="stat-label">设备总数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.active_devices}}</view>
+        <view class="stat-label">活跃设备</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{statistics.total_alerts}}</view>
+        <view class="stat-label">预警总数</view>
+      </view>
+      <view class="stat-item highlight">
+        <view class="stat-value">{{statistics.unhandled_alerts}}</view>
+        <view class="stat-label">待处理预警</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="card">
+    <view class="card-header">
+      <view class="card-title">管理功能</view>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goToUserManagement">
+        <view class="menu-icon">👥</view>
+        <view class="menu-content">
+          <view class="menu-title">用户管理</view>
+          <view class="menu-desc">查看和管理所有用户</view>
+        </view>
+        <view class="menu-arrow">›</view>
+      </view>
+      <view class="menu-item" bindtap="goToSystemConfig">
+        <view class="menu-icon">⚙️</view>
+        <view class="menu-content">
+          <view class="menu-title">系统配置</view>
+          <view class="menu-desc">管理系统配置参数</view>
+        </view>
+        <view class="menu-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+</view>
+

@@ -1,0 +1,87 @@
+<!--pages/admin/config/config.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="card-header">
+      <view class="card-title">系统配置</view>
+      <view style="display: flex; gap: 16rpx; align-items: center;">
+        <text class="refresh-btn" bindtap="refresh">🔄 刷新</text>
+        <button class="btn-add" bindtap="showAddForm">+ 添加</button>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    
+    <view wx:elif="{{configs.length === 0}}" class="empty-state">
+      <view class="empty-icon">⚙️</view>
+      <view class="empty-text">暂无配置</view>
+    </view>
+    
+    <view wx:else class="config-list">
+      <view wx:for="{{configs}}" wx:key="id" class="config-item">
+        <view class="config-header">
+          <view class="config-key">{{item.key}}</view>
+          <view class="config-actions">
+            <view class="action-btn" bindtap="showEditForm" data-config="{{item}}">
+              <image src="/images/edit.png" class="action-btn-icon" mode="aspectFit"></image>
+              <text>编辑</text>
+            </view>
+            <view class="action-btn danger" bindtap="deleteConfig" data-config="{{item}}">
+              <image src="/images/delete.png" class="action-btn-icon" mode="aspectFit"></image>
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+        <view class="config-value">
+          <text class="value-label">值:</text>
+          <text class="value-text">{{item.value}}</text>
+        </view>
+        <view class="config-meta">
+          <text class="meta-item">类型: {{item.value_type === 'string' ? '字符串' : item.value_type === 'integer' ? '整数' : item.value_type === 'float' ? '浮点数' : item.value_type === 'boolean' ? '布尔值' : 'JSON'}}</text>
+          <text class="meta-item">公开: {{item.is_public ? '是' : '否'}}</text>
+        </view>
+        <view wx:if="{{item.description}}" class="config-desc">{{item.description}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加/编辑表单 -->
+  <view wx:if="{{showAddForm}}" class="add-form">
+    <view class="form-title">{{editingConfig ? '编辑配置' : '添加配置'}}</view>
+    
+    <view class="form-group">
+      <view class="form-label">配置键 *</view>
+      <input class="form-input" placeholder="请输入配置键（唯一）" value="{{formData.key}}" bindinput="onKeyInput" disabled="{{!!editingConfig}}"/>
+    </view>
+    
+    <view class="form-group">
+      <view class="form-label">配置值 *</view>
+      <textarea class="form-textarea" placeholder="请输入配置值" value="{{formData.value}}" bindinput="onValueInput" maxlength="1000"/>
+    </view>
+    
+    <view class="form-group">
+      <view class="form-label">值类型</view>
+      <picker mode="selector" range="{{['字符串', '整数', '浮点数', '布尔值', 'JSON']}}" value="{{formData.value_type === 'string' ? 0 : formData.value_type === 'integer' ? 1 : formData.value_type === 'float' ? 2 : formData.value_type === 'boolean' ? 3 : 4}}" bindchange="onTypeChange">
+        <view class="form-picker">
+          <text>{{formData.value_type === 'string' ? '字符串' : formData.value_type === 'integer' ? '整数' : formData.value_type === 'float' ? '浮点数' : formData.value_type === 'boolean' ? '布尔值' : 'JSON'}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <view class="form-label">描述</view>
+      <input class="form-input" placeholder="请输入配置描述" value="{{formData.description}}" bindinput="onDescriptionInput"/>
+    </view>
+    
+    <view class="form-group">
+      <view class="form-label">是否公开</view>
+      <switch checked="{{formData.is_public}}" bindchange="onPublicChange" color="#4A90E2"/>
+    </view>
+    
+    <view class="form-buttons">
+      <button class="btn btn-secondary" bindtap="cancelEdit">取消</button>
+      <button class="btn btn-primary" bindtap="submitForm">{{editingConfig ? '保存' : '添加'}}</button>
+    </view>
+  </view>
+</view>
+

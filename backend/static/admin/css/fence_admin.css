@@ -1,0 +1,22 @@
+/* 围栏管理页面样式 */
+.field-map_picker {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.field-map_picker #fence_map_picker {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.field-map_preview {
+    margin: 15px 0;
+}
+
+.field-map_preview #fence_map_preview {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+

@@ -1,0 +1,92 @@
+<!--pages/alert/alert.wxml-->
+<view class="container">
+  <!-- 筛选标签 -->
+  <view class="card" style="padding: 20rpx;">
+    <view class="filter-group">
+      <view 
+        class="filter-btn {{filter === 'all' ? 'filter-btn-active' : ''}}" 
+        bindtap="switchFilter" 
+        data-filter="all"
+      >
+        全部
+      </view>
+      <view 
+        class="filter-btn {{filter === 'pending' ? 'filter-btn-active' : ''}}" 
+        bindtap="switchFilter" 
+        data-filter="pending"
+      >
+        待处理
+      </view>
+      <view 
+        class="filter-btn {{filter === 'handled' ? 'filter-btn-active' : ''}}" 
+        bindtap="switchFilter" 
+        data-filter="handled"
+      >
+        已处理
+      </view>
+    </view>
+    <!-- 操作按钮区域 -->
+    <view class="batch-action-section">
+      <!-- 一键处理按钮（仅在全部或待处理筛选时显示，且有待处理警告时显示） -->
+      <view wx:if="{{(filter === 'all' || filter === 'pending') && pendingCount > 0}}" class="batch-handle-item">
+        <button class="btn-batch-handle" bindtap="handleAllAlerts">
+          <text class="batch-handle-icon">✓</text>
+          <text class="batch-handle-text">一键处理全部({{pendingCount}}个)</text>
+        </button>
+      </view>
+      <!-- 清理已处理按钮（仅在已处理筛选时显示） -->
+      <view wx:if="{{filter === 'handled' && alerts.length > 0}}" class="batch-handle-item">
+        <button class="btn-batch-clear" bindtap="clearHandledAlerts">
+          <text class="batch-handle-icon">🗑️</text>
+          <text class="batch-handle-text">清理已处理({{alerts.length}}个)</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预警列表 -->
+  <view wx:if="{{loading}}" style="text-align: center; padding: 40rpx;">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:elif="{{alerts.length === 0}}" class="card" style="text-align: center; padding: 40rpx; color: #999;">
+    <text>暂无预警信息</text>
+  </view>
+
+  <view wx:else>
+    <view wx:for="{{alerts}}" wx:key="id" class="card alert-card">
+      <view style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20rpx;">
+        <view style="flex: 1;">
+          <view class="alert-title {{item.severity === 'critical' ? 'alert-title-critical' : item.severity === 'high' ? 'alert-title-high' : 'alert-title-normal'}}">
+            {{item.title}}
+          </view>
+          <view class="alert-message">
+            {{item.message}}
+          </view>
+          <view class="alert-meta">
+            {{item.device && item.device.elderly && item.device.elderly.name || '未知'}} | {{item.created_at}}
+          </view>
+        </view>
+        <view wx:if="{{item.status === 'pending'}}" class="status-badge status-pending">
+          待处理
+        </view>
+        <view wx:else class="status-badge status-handled">
+          已处理
+        </view>
+      </view>
+      
+      <view wx:if="{{item.location}}" class="location-card">
+        <button class="btn btn-primary" style="width: 100%;" bindtap="navigateToLocation" data-location="{{item.location}}">
+          导航到此位置
+        </button>
+      </view>
+      
+      <view wx:if="{{item.status === 'pending'}}" style="margin-top: 20rpx;">
+        <button class="btn btn-success" style="width: 100%;" bindtap="handleAlert" data-id="{{item.id}}">
+          处理预警
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+

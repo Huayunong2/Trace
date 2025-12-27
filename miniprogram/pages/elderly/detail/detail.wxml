@@ -1,0 +1,154 @@
+<!--pages/elderly/detail.wxml-->
+<view class="container">
+  <!-- 编辑按钮（仅监护人可见） -->
+  <view wx:if="{{elderly && userRole === 'guardian' && !showEditForm}}" class="action-bar">
+    <button class="btn-edit" bindtap="showEditForm">
+      <image src="/images/edit.png" class="btn-icon" mode="aspectFit"></image>
+      <text>编辑</text>
+    </button>
+    <button class="btn-delete" bindtap="deleteElderly">
+      <image src="/images/delete.png" class="btn-icon" mode="aspectFit"></image>
+      <text>删除</text>
+    </button>
+  </view>
+
+  <!-- 查看模式 -->
+  <view wx:if="{{elderly && !showEditForm}}" class="card">
+    <view style="text-align: center; margin-bottom: 30rpx;">
+      <image wx:if="{{elderly.photo}}" src="{{elderly.photo}}" style="width: 200rpx; height: 200rpx; border-radius: 50%;"></image>
+      <image wx:else src="{{elderly.gender === 'male' ? '/images/avatar-default-male.png' : elderly.gender === 'female' ? '/images/avatar-default-female.png' : '/images/avatar-default.png'}}" style="width: 200rpx; height: 200rpx; border-radius: 50%;" mode="aspectFill"></image>
+      <view class="extra-large-text" style="font-weight: bold; margin-top: 20rpx;">{{elderly.name}}</view>
+    </view>
+    
+    <view class="list-item">
+      <text>年龄</text>
+      <text>{{elderly.age || '未知'}}岁</text>
+    </view>
+    <view class="list-item">
+      <text>性别</text>
+      <text>{{elderly.gender === 'male' ? '男' : '女'}}</text>
+    </view>
+    <view class="list-item">
+      <text>常住地址</text>
+      <text>{{elderly.address || '未知'}}</text>
+    </view>
+    <view class="list-item">
+      <text>紧急联系人</text>
+      <text>{{elderly.emergency_contact}}</text>
+    </view>
+    <view class="list-item">
+      <text>紧急电话</text>
+      <text>{{elderly.emergency_phone}}</text>
+    </view>
+    
+    <view wx:if="{{elderly.medical_history}}" style="margin-top: 30rpx; padding: 20rpx; background-color: #f5f5f5; border-radius: 8rpx;">
+      <view style="font-weight: bold; margin-bottom: 10rpx;">病史</view>
+      <view style="color: #666;">{{elderly.medical_history}}</view>
+    </view>
+  </view>
+  
+  <view class="card">
+    <view class="large-text" style="font-weight: bold; margin-bottom: 20rpx;">设备信息</view>
+    <view wx:if="{{device}}">
+      <view class="list-item">
+        <text>设备名称</text>
+        <text>{{device.name}}</text>
+      </view>
+      <view class="list-item">
+        <text>设备ID</text>
+        <text style="font-size: 24rpx; color: #666;">{{device.device_id}}</text>
+      </view>
+      <view class="list-item">
+        <text>设备状态</text>
+        <view class="status-wrapper">
+          <image src="{{device.status === 'online' ? '/images/status-online.png' : device.status === 'low_battery' ? '/images/status-battery-low.png' : '/images/status-offline.png'}}" class="status-icon" mode="aspectFit"></image>
+          <text class="status-text" style="color: {{device.status === 'online' ? '#27AE60' : device.status === 'low_battery' ? '#FF9800' : '#E74C3C'}};">
+            {{device.status === 'online' ? '在线' : device.status === 'low_battery' ? '低电量' : device.status === 'error' ? '故障' : '离线'}}
+          </text>
+        </view>
+      </view>
+      <view class="list-item">
+        <text>电量</text>
+        <view style="display: flex; align-items: center;">
+          <image src="{{(device.battery_level || 100) > 20 ? '/images/status-battery-high.png' : '/images/status-battery-low.png'}}" style="width: 32rpx; height: 32rpx; margin-right: 12rpx;" mode="aspectFit"></image>
+          <view class="battery-wrapper">
+            <view class="battery-level" style="width: {{device.battery_level || 100}}%; background-color: {{(device.battery_level || 100) > 20 ? '#27AE60' : '#E74C3C'}};"></view>
+          </view>
+          <text style="margin-left: 12rpx; color: {{(device.battery_level || 100) > 20 ? '#333' : '#E74C3C'}};">{{device.battery_level || 100}}%</text>
+        </view>
+      </view>
+      <view class="list-item">
+        <text>设备类型</text>
+        <view style="display: flex; align-items: center;">
+          <image src="{{device.device_type === 'smart_bracelet' ? '/images/device-bracelet.png' : device.device_type === 'phone' ? '/images/device-phone.png' : '/images/device-bracelet.png'}}" style="width: 40rpx; height: 40rpx; margin-right: 12rpx;" mode="aspectFit"></image>
+          <text>{{device.device_type === 'smart_bracelet' ? '智能手环' : device.device_type === 'phone' ? '手机' : '未知'}}</text>
+        </view>
+      </view>
+      <view wx:if="{{device.last_online_time}}" class="list-item">
+        <text>最后在线</text>
+        <text style="font-size: 24rpx; color: #999;">{{device.last_online_time}}</text>
+      </view>
+      <button class="btn btn-primary" style="width: 100%; margin-top: 30rpx;" bindtap="bindDevice">{{userRole === 'elderly' ? '生成设备ID' : '绑定/更换设备'}}</button>
+    </view>
+    <view wx:else>
+      <view style="text-align: center; padding: 40rpx; color: #999; margin-bottom: 20rpx;">
+        <text>暂无绑定设备</text>
+      </view>
+      <button class="btn btn-primary" style="width: 100%;" bindtap="bindDevice">{{userRole === 'elderly' ? '生成设备ID' : '绑定设备'}}</button>
+    </view>
+  </view>
+
+  <!-- 编辑表单 -->
+  <view wx:if="{{showEditForm}}" class="card">
+    <view class="form-title">编辑老人信息</view>
+    
+    <view class="form-group">
+      <view class="form-label">姓名 <text class="required">*</text></view>
+      <input class="form-input" placeholder="请输入姓名" value="{{editForm.name}}" data-field="name" bindinput="onEditInput" maxlength="50"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">年龄</view>
+      <input class="form-input" placeholder="请输入年龄" type="number" value="{{editForm.age}}" data-field="age" bindinput="onEditInput" maxlength="3"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">性别</view>
+      <radio-group bindchange="onGenderChange">
+        <label class="radio-label"><radio value="male" checked="{{editForm.gender === 'male'}}"/> 男</label>
+        <label class="radio-label"><radio value="female" checked="{{editForm.gender === 'female'}}"/> 女</label>
+      </radio-group>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">紧急联系人 <text class="required">*</text></view>
+      <input class="form-input" placeholder="请输入紧急联系人姓名" value="{{editForm.emergency_contact}}" data-field="emergency_contact" bindinput="onEditInput" maxlength="50"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">紧急联系电话 <text class="required">*</text></view>
+      <input class="form-input" placeholder="请输入紧急联系电话" type="number" value="{{editForm.emergency_phone}}" data-field="emergency_phone" bindinput="onEditInput" maxlength="11"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">常住地址</view>
+      <input class="form-input" placeholder="请输入常住地址" value="{{editForm.address}}" data-field="address" bindinput="onEditInput" maxlength="200"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">病史</view>
+      <textarea class="form-textarea" placeholder="请输入病史信息" value="{{editForm.medical_history}}" data-field="medical_history" bindinput="onEditInput" maxlength="500"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" placeholder="请输入备注信息" value="{{editForm.notes}}" data-field="notes" bindinput="onEditInput" maxlength="500"/>
+    </view>
+
+    <view class="form-buttons">
+      <button class="btn btn-secondary" bindtap="cancelEdit">取消</button>
+      <button class="btn btn-primary" bindtap="submitEdit">保存</button>
+    </view>
+  </view>
+</view>
+

@@ -1,0 +1,129 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration bg-decoration-1"></view>
+  <view class="bg-decoration bg-decoration-2"></view>
+  
+  <view class="login-content">
+    <!-- Logo区域 -->
+    <view class="logo-section">
+      <view class="logo-wrapper">
+        <view class="logo-icon">👴</view>
+        <view class="logo-circle"></view>
+      </view>
+      <view class="logo-text">防走失预警系统</view>
+      <view class="logo-desc">守护您的家人，让爱不迷路</view>
+    </view>
+
+    <!-- 登录按钮 -->
+    <view class="login-section">
+      <button class="login-btn" bindtap="onLogin" loading="{{loading}}" hover-class="login-btn-hover" disabled="{{loading}}">
+        <text class="login-btn-text">微信快速登录</text>
+      </button>
+      
+      <view class="login-tips">
+        <text>登录即表示同意</text>
+        <text class="link-text">《用户协议》</text>
+        <text>和</text>
+        <text class="link-text">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本号 -->
+  <view class="version-info">
+    <text class="version-text">v1.0.5</text>
+  </view>
+
+  <!-- 身份选择弹窗 -->
+  <view wx:if="{{showRoleSelector}}" class="role-modal" catchtouchmove="preventTouchMove">
+    <view class="role-modal-content" catchtap="stopPropagation">
+      <view class="role-modal-header">
+        <text class="role-modal-title">请选择您的身份</text>
+        <text class="role-modal-close" bindtap="cancelRoleSelect">×</text>
+      </view>
+      
+      <!-- 头像昵称填写（可选，2022年后推荐的方式） -->
+      <view class="user-info-section">
+        <view class="user-info-item">
+          <text class="user-info-label">头像</text>
+          <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+            <image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" class="avatar-preview" mode="aspectFill"></image>
+            <view wx:else class="avatar-placeholder">
+              <text class="avatar-placeholder-icon">📷</text>
+              <text class="avatar-placeholder-text">选择头像</text>
+            </view>
+          </button>
+        </view>
+        <view class="user-info-item">
+          <text class="user-info-label">昵称</text>
+          <input 
+            type="nickname" 
+            class="nickname-input" 
+            placeholder="请输入昵称（可选）" 
+            value="{{nickname}}"
+            bindinput="onInputNickname"
+          />
+        </view>
+      </view>
+
+      <view class="role-options">
+        <view 
+          class="role-option {{selectedRole === 'guardian' ? 'selected' : ''}}" 
+          bindtap="selectRole" 
+          data-role="guardian"
+        >
+          <view class="role-icon-wrapper">
+            <view class="role-icon">👨‍👩‍👧</view>
+          </view>
+          <view class="role-content">
+            <view class="role-name">监护人</view>
+            <view class="role-desc">管理老人信息和设备，绑定设备</view>
+          </view>
+          <view class="role-check">
+            <text class="role-check-icon">✓</text>
+          </view>
+        </view>
+
+        <view 
+          class="role-option {{selectedRole === 'elderly' ? 'selected' : ''}}" 
+          bindtap="selectRole" 
+          data-role="elderly"
+        >
+          <view class="role-icon-wrapper">
+            <view class="role-icon">👴</view>
+          </view>
+          <view class="role-content">
+            <view class="role-name">老人</view>
+            <view class="role-desc">查看自己的位置和设备，上传位置</view>
+          </view>
+          <view class="role-check">
+            <text class="role-check-icon">✓</text>
+          </view>
+        </view>
+
+        <view 
+          class="role-option {{selectedRole === 'system_admin' ? 'selected' : ''}}" 
+          bindtap="selectRole" 
+          data-role="system_admin"
+        >
+          <view class="role-icon-wrapper">
+            <view class="role-icon">⚙️</view>
+          </view>
+          <view class="role-content">
+            <view class="role-name">系统管理员</view>
+            <view class="role-desc">管理系统配置和用户管理</view>
+          </view>
+          <view class="role-check">
+            <text class="role-check-icon">✓</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="role-modal-footer">
+        <button class="btn-cancel" bindtap="cancelRoleSelect">取消</button>
+        <button class="btn-confirm" bindtap="confirmLogin" disabled="{{!selectedRole}}">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

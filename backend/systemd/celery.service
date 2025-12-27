@@ -1,0 +1,25 @@
+[Unit]
+Description=Celery worker for elderly tracking system
+After=network.target redis.service
+
+[Service]
+Type=forking
+User=root
+Group=root
+WorkingDirectory=/root/Project/backend
+Environment="PATH=/root/Project/backend/venv/bin"
+Environment="DJANGO_SETTINGS_MODULE=config.settings_prod"
+ExecStart=/root/Project/backend/venv/bin/celery multi start worker1 \
+    --app=config.celery:app \
+    --pidfile=/root/Project/backend/logs/celery_%n.pid \
+    --logfile=/root/Project/backend/logs/celery_%n.log \
+    --loglevel=info
+ExecStop=/root/Project/backend/venv/bin/celery multi stopwait worker1 \
+    --pidfile=/root/Project/backend/logs/celery_%n.pid
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+

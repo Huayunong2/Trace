@@ -1,0 +1,58 @@
+<!--pages/map/map.wxml-->
+<view class="container">
+  <map
+    id="map"
+    longitude="{{mapCenter.longitude}}"
+    latitude="{{mapCenter.latitude}}"
+    scale="{{mapScale}}"
+    markers="{{markers}}"
+    circles="{{circles}}"
+    polyline="{{polyline}}"
+    style="width: 100%; height: 70vh;"
+  ></map>
+
+  <!-- 位置信息卡片 -->
+  <view class="location-info-card" wx:if="{{location}}">
+    <view class="location-header">
+      <view class="location-name">
+        {{device && device.elderly && device.elderly.name || '当前位置'}}
+      </view>
+      <view class="location-time">
+        ⏰ {{location.recorded_at}}
+      </view>
+    </view>
+    <view class="action-buttons">
+      <button class="btn btn-primary action-btn" bindtap="navigateToLocation">
+        🗺️ 导航到此
+      </button>
+    </view>
+  </view>
+
+  <!-- 无设备位置信息提示 -->
+  <view class="card no-location-card" wx:if="{{!location && deviceId && !loading && device && device.device_id}}">
+    <view class="no-location-icon">📍</view>
+    <view class="no-location-title">设备暂无位置数据</view>
+    <view class="no-location-desc">设备需要上传位置信息后才能在地图上显示</view>
+    <view class="no-location-tip">提示：设备上传位置后会自动显示在地图上</view>
+  </view>
+  
+  <!-- 无设备提示 -->
+  <view class="card no-device-card" wx:if="{{!deviceId && !loading}}">
+    <view class="no-device-icon">📱</view>
+    <view class="no-device-title">请先选择设备</view>
+    <view class="no-device-desc">从首页选择要查看位置的老人</view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="card bottom-actions">
+    <view class="action-buttons">
+      <button class="btn btn-primary action-btn" bindtap="addFence">
+        添加围栏
+      </button>
+      <button class="btn btn-success action-btn" bindtap="loadMapData">
+        刷新位置
+      </button>
+    </view>
+  </view>
+</view>
+

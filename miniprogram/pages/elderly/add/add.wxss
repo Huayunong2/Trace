@@ -1,0 +1,55 @@
+/* pages/elderly/add/add.wxss */
+
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 20rpx;
+}
+
+.large-text {
+  font-size: 32rpx;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 24rpx;
+  border: 1px solid #e0e0e0;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+  color: #333;
+  line-height: 1.5;
+  min-height: 76rpx;
+}
+
+textarea {
+  min-height: 150rpx;
+}
+
+.radio-label {
+  display: inline-block;
+  margin-right: 40rpx;
+  font-size: 28rpx;
+}
+
+.btn {
+  width: 100%;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  font-size: 32rpx;
+  text-align: center;
+  border: none;
+}
+
+.btn-primary {
+  background: #4A90E2;
+  color: white;
+}

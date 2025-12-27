@@ -1,0 +1,79 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/elderly/index/index",
+    "pages/index/index",
+    "pages/map/map",
+    "pages/fence/fence",
+    "pages/track/track",
+    "pages/alert/alert",
+    "pages/profile/profile",
+    "pages/elderly/add/add",
+    "pages/elderly/detail/detail",
+    "pages/admin/index/index",
+    "pages/admin/users/users",
+    "pages/admin/users/detail/detail",
+    "pages/admin/users/add/add",
+    "pages/admin/config/config"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#4A90E2",
+    "navigationBarTitleText": "防走失预警系统",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#4A90E2",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/map/map",
+        "text": "地图",
+        "iconPath": "images/map.png",
+        "selectedIconPath": "images/map-active.png"
+      },
+      {
+        "pagePath": "pages/alert/alert",
+        "text": "预警",
+        "iconPath": "images/alert.png",
+        "selectedIconPath": "images/alert-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "位置信息用于定位服务，请选择后台定位权限"
+    },
+    "scope.userLocationBackground": {
+      "desc": "位置信息用于后台定位服务，以便持续追踪"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation",
+    "startLocationUpdate",
+    "onLocationChange"
+  ],
+  "requiredBackgroundModes": [
+    "location"
+  ],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
+

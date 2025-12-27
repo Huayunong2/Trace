@@ -1,0 +1,27 @@
+<!--pages/track/track.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="large-text" style="font-weight: bold; margin-bottom: 20rpx;">轨迹回放</view>
+    <picker mode="date" value="{{selectedDate}}" bindchange="onDateChange">
+      <view class="list-item">
+        <text>选择日期</text>
+        <text>{{selectedDate}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <map
+    longitude="{{trackData && trackData.locations && trackData.locations[0] && trackData.locations[0].longitude || 116.397470}}"
+    latitude="{{trackData && trackData.locations && trackData.locations[0] && trackData.locations[0].latitude || 39.908823}}"
+    markers="{{markers}}"
+    polyline="{{polyline}}"
+    style="width: 100%; height: 60vh;"
+  ></map>
+
+  <view class="card" wx:if="{{trackData}}">
+    <view style="color: #666;">
+      共 {{trackData.count}} 个位置点
+    </view>
+  </view>
+</view>
+

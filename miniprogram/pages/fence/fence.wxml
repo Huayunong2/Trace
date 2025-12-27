@@ -1,0 +1,99 @@
+<!--pages/fence/fence.wxml-->
+<view class="container">
+  <view class="card">
+    <view style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30rpx;">
+      <view class="large-text" style="font-weight: bold;">围栏管理</view>
+      <button class="btn btn-primary" bindtap="showAdd">+ 添加围栏</button>
+    </view>
+    
+    <view wx:if="{{fences.length === 0}}" class="empty-state">
+      <view class="empty-icon">📍</view>
+      <view class="empty-text">暂无围栏，点击上方按钮添加</view>
+    </view>
+    
+    <view wx:else>
+      <view wx:for="{{fences}}" wx:key="id" class="fence-item {{item.is_violation ? 'violation' : ''}}">
+        <view class="fence-header">
+          <view class="fence-name">{{item.name}}</view>
+          <view class="fence-status">
+            <view class="status-badge {{item.is_violation ? 'status-violation' : 'status-active'}}">
+              {{item.is_violation ? '⚠️ 越界' : '✅ 正常'}}
+            </view>
+            <switch checked="{{item.is_active}}" bindchange="toggleFence" data-id="{{item.id}}" color="#4CAF50"/>
+          </view>
+        </view>
+        <view class="fence-info">
+          <view class="fence-address">
+            <text>📍</text>
+            <text>{{item.address || '未知地址'}}</text>
+          </view>
+        </view>
+        <view class="fence-details">
+          <view class="fence-stat">
+            <text>半径:</text>
+            <text style="font-weight: 600;">{{item.radius}}米</text>
+          </view>
+          <view class="fence-stat" wx:if="{{item.violation_count > 0}}">
+            <text>越界次数:</text>
+            <text style="font-weight: 600; color: #FF5252;">{{item.violation_count}}</text>
+          </view>
+          <view class="fence-stat" wx:if="{{item.last_violation_time}}">
+            <text>最后越界:</text>
+            <text style="font-size: 24rpx;">{{item.last_violation_time}}</text>
+          </view>
+        </view>
+        <view class="fence-actions">
+          <button class="btn-edit" bindtap="editFence" data-id="{{item.id}}" data-item="{{item}}">
+            <image src="/images/edit.png" class="btn-icon" mode="aspectFit"></image>
+            <text>编辑</text>
+          </button>
+          <button class="btn-delete" bindtap="deleteFence" data-id="{{item.id}}" data-item="{{item}}">
+            <image src="/images/delete.png" class="btn-icon" mode="aspectFit"></image>
+            <text>删除</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加/编辑围栏表单 -->
+  <view wx:if="{{showAddForm || showEditForm}}" class="add-form">
+    <view class="form-title">{{showEditForm ? '编辑围栏' : '添加围栏'}}</view>
+    
+    <view class="form-group">
+      <view class="form-label">围栏名称</view>
+      <input class="form-input" placeholder="请输入围栏名称" value="{{formData.name}}" bindinput="onNameInput" maxlength="50"/>
+    </view>
+    
+    <view class="form-group">
+      <view class="form-label">围栏位置</view>
+      <button class="location-button" bindtap="chooseLocation">
+        {{formData.address ? '📍 ' + formData.address : '📍 选择位置'}}
+      </button>
+      <view class="location-helpers">
+        <button class="btn-helper" bindtap="showLocationInput">输入地址</button>
+        <button class="btn-helper" bindtap="showCoordinateInput">输入坐标</button>
+      </view>
+      <view wx:if="{{formData.center_latitude && formData.center_longitude}}" class="coordinate-info">
+        经纬度: {{formData.center_latitude}}, {{formData.center_longitude}}
+      </view>
+      <view wx:if="{{!formData.center_latitude || !formData.center_longitude}}" class="coordinate-warning">
+        ⚠️ 提示：开发者工具中可使用"输入地址"或"输入坐标"
+      </view>
+    </view>
+    
+    <view class="form-group">
+      <view class="form-label">围栏半径（米）</view>
+      <input class="form-input" placeholder="请输入半径（1-2000米），默认500米" type="number" value="{{formData.radius}}" bindinput="onRadiusInput"/>
+      <view class="form-hint">范围：1-2000米</view>
+    </view>
+    
+    <view class="form-buttons">
+      <button class="btn btn-secondary" bindtap="cancelAdd">取消</button>
+      <button class="btn btn-submit" bindtap="{{showEditForm ? 'submitEdit' : 'submitAdd'}}">
+        {{showEditForm ? '保存修改' : '确定添加'}}
+      </button>
+    </view>
+  </view>
+</view>
+
