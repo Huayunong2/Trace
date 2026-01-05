@@ -100,6 +100,12 @@ class WeChatPushService:
                 errmsg = result.get('errmsg', '未知错误')
                 retryable_errors = [40001, 40014, 42001, 45011]
                 
+                # 45009: 频率限制（同一用户同一模板每天最多发送一次）
+                # 这是微信订阅消息的限制，需要用户重新订阅才能再次发送
+                if errcode == 45009:
+                    logger.warning(f'订阅消息发送失败（频率限制）: errcode={errcode}, errmsg={errmsg}, openid={openid}')
+                    return {'success': False, 'errcode': errcode, 'error': errmsg, 'need_resubscribe': True}
+                
                 if errcode in retryable_errors and retry_count < MAX_RETRY:
                     logger.warning(f'订阅消息发送失败，准备重试: errcode={errcode}, retry={retry_count+1}')
                     time.sleep(RETRY_DELAY)

@@ -18,16 +18,25 @@ class AlertViewSet(viewsets.ModelViewSet):
         
         # 管理员角色：可以查看所有警告
         if user.role in ['community_admin', 'system_admin']:
-            queryset = Alert.objects.all()
+            queryset = Alert.objects.select_related(
+                'device', 'device__elderly', 'device__elderly__guardian',
+                'location', 'handled_by'
+            ).all()
         # 老人角色：查看与自己用户直接关联的设备报警
         elif user.role == 'elderly':
             devices = Device.objects.filter(elderly__user=user)
-            queryset = Alert.objects.filter(device__in=devices)
+            queryset = Alert.objects.select_related(
+                'device', 'device__elderly', 'device__elderly__guardian',
+                'location', 'handled_by'
+            ).filter(device__in=devices)
         else:
             # 监护人角色：查看自己管理的老人设备报警（guardian不为null且等于当前用户）
             elderly_profiles = ElderlyProfile.objects.filter(guardian=user)
             devices = Device.objects.filter(elderly__in=elderly_profiles)
-            queryset = Alert.objects.filter(device__in=devices)
+            queryset = Alert.objects.select_related(
+                'device', 'device__elderly', 'device__elderly__guardian',
+                'location', 'handled_by'
+            ).filter(device__in=devices)
         
         status_filter = self.request.query_params.get('status')
         alert_type = self.request.query_params.get('type')

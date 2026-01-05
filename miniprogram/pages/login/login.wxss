@@ -169,19 +169,6 @@
   letter-spacing: 2rpx;
 }
 
-.login-tips {
-  text-align: center;
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.8;
-  padding: 0 20rpx;
-}
-
-.link-text {
-  color: #ffffff;
-  text-decoration: underline;
-}
-
 @keyframes fadeInDown {
   from {
     opacity: 0;

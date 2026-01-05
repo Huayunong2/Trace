@@ -140,7 +140,10 @@ Page({
         };
         this.setData({ device: deviceData });
       }
-    }).catch(() => {});
+      }).catch((err) => {
+        // 获取地址失败，静默处理，不影响地图显示
+        console.error('获取地址失败:', err);
+      });
   },
 
   // 加载最新位置

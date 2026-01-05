@@ -100,6 +100,21 @@ Page({
               icon: 'success'
             });
             this.loadAlerts();
+            
+            // 提示用户重新订阅消息（微信订阅消息是"一次性"的，处理警报后需要重新订阅才能收到新推送）
+            setTimeout(() => {
+              wx.showModal({
+                title: '提示',
+                content: '为了及时接收新的警报通知，建议重新订阅消息',
+                confirmText: '重新订阅',
+                cancelText: '稍后',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    this.resubscribeMessages();
+                  }
+                }
+              });
+            }, 1500);
           }).catch(err => {
             wx.showToast({
               title: err.message || '处理失败，请重试',
@@ -108,6 +123,45 @@ Page({
           });
         }
       }
+    });
+  },
+  
+  // 重新订阅消息
+  resubscribeMessages() {
+    const subscribe = require('../../utils/subscribe.js');
+    wx.showLoading({
+      title: '订阅中...',
+      mask: true
+    });
+    
+    subscribe.subscribeAllAlerts({ showToast: false }).then(result => {
+      wx.hideLoading();
+      if (result.success) {
+        const acceptCount = Object.values(result.results || {}).filter(status => status === 'accept').length;
+        if (acceptCount > 0) {
+          wx.showToast({
+            title: `已重新订阅${acceptCount}类警报通知`,
+            icon: 'success',
+            duration: 2000
+          });
+        } else {
+          wx.showToast({
+            title: '订阅失败，请稍后重试',
+            icon: 'none'
+          });
+        }
+      } else {
+        wx.showToast({
+          title: '订阅失败，请稍后重试',
+          icon: 'none'
+        });
+      }
+    }).catch(err => {
+      wx.hideLoading();
+      wx.showToast({
+        title: '订阅失败，请稍后重试',
+        icon: 'none'
+      });
     });
   },
 
@@ -167,6 +221,21 @@ Page({
               duration: 2000
             });
             this.loadAlerts();
+            
+            // 批量处理成功后，提示用户重新订阅消息
+            setTimeout(() => {
+              wx.showModal({
+                title: '提示',
+                content: '为了及时接收新的警报通知，建议重新订阅消息',
+                confirmText: '重新订阅',
+                cancelText: '稍后',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    this.resubscribeMessages();
+                  }
+                }
+              });
+            }, 2000);
           }).catch(err => {
             wx.hideLoading();
             wx.showToast({

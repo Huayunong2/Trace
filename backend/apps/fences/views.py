@@ -23,7 +23,10 @@ class FenceViewSet(viewsets.ModelViewSet):
             elderly_profiles = ElderlyProfile.objects.filter(guardian=user)
             devices = Device.objects.filter(elderly__in=elderly_profiles)
         
-        fences = Fence.objects.filter(device__in=devices)
+        # 使用select_related优化查询
+        fences = Fence.objects.select_related(
+            'device', 'device__elderly', 'device__elderly__guardian'
+        ).filter(device__in=devices)
         
         device_id = self.request.query_params.get('device_id')
         if device_id:
@@ -58,5 +61,8 @@ class FenceViolationLogViewSet(viewsets.ReadOnlyModelViewSet):
             devices = Device.objects.filter(elderly__in=elderly_profiles)
         
         fences = Fence.objects.filter(device__in=devices)
-        return FenceViolationLog.objects.filter(fence__in=fences)
+        # 使用select_related优化查询
+        return FenceViolationLog.objects.select_related(
+            'fence', 'fence__device', 'location'
+        ).filter(fence__in=fences)
 

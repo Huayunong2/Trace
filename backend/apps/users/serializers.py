@@ -28,15 +28,18 @@ class ElderlyProfileSerializer(serializers.ModelSerializer):
     def get_device(self, obj):
         """获取关联的设备信息"""
         try:
+            # 使用select_related优化查询，避免N+1问题
             device = obj.device
-            return {
-                'device_id': device.device_id,
-                'name': device.name,
-                'device_type': device.device_type,
-                'status': device.status,
-                'is_active': device.is_active
-            }
-        except:
+            if device:
+                return {
+                    'device_id': device.device_id,
+                    'name': device.name,
+                    'device_type': device.device_type,
+                    'status': device.status,
+                    'is_active': device.is_active
+                }
+            return None
+        except Exception:
             return None
 
 

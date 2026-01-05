@@ -62,16 +62,18 @@ def _send_alert_notification_sync(device_id, alert_type):
             logger.warning(f'警报类型 {alert_type} 未配置模板ID，跳过推送')
             return
         
-        # 检查用户是否订阅了该模板（如果未订阅，也尝试发送，因为用户可能之前订阅过但记录丢失）
+        # 检查用户订阅状态（仅用于日志记录，不影响推送）
         subscribe_record = SubscribeMessage.objects.filter(
             user=guardian,
-            template_id=template_id,
-            subscribe_status=True
+            template_id=template_id
         ).first()
         
-        if not subscribe_record:
-            logger.info(f'监护人 {guardian.username} 未订阅模板 {template_id}，但尝试发送推送（用户可能已订阅但记录丢失）')
-            # 继续执行，因为用户可能之前订阅过但记录丢失
+        # 无论订阅状态如何，都尝试推送（因为微信订阅状态可能已更新，但数据库中记录未更新）
+        # 这样即使订阅状态被误标记为False，也能继续尝试推送
+        if subscribe_record and not subscribe_record.subscribe_status:
+            logger.info(f'监护人 {guardian.username} 订阅状态为False，但仍尝试推送（可能已重新订阅）')
+        elif not subscribe_record:
+            logger.info(f'监护人 {guardian.username} 无订阅记录，尝试推送（用户可能已订阅但记录丢失）')
         
         # 格式化消息数据（传入alert_type以使用正确的模板格式）
         message_data = WeChatPushService.format_alert_message(latest_alert, device, elderly, alert_type)
@@ -79,7 +81,7 @@ def _send_alert_notification_sync(device_id, alert_type):
         # 确定跳转页面
         page = 'pages/alert/alert'  # 跳转到警报页面
         
-        # 发送订阅消息
+        # 发送订阅消息（无论订阅状态如何都尝试推送）
         result = WeChatPushService.send_subscribe_message(
             openid=guardian.openid,
             template_id=template_id,
@@ -88,26 +90,42 @@ def _send_alert_notification_sync(device_id, alert_type):
         )
         
         if result.get('success'):
-            if not subscribe_record:
-                SubscribeMessage.objects.update_or_create(
-                    user=guardian,
-                    template_id=template_id,
-                    defaults={'subscribe_status': True}
-                )
+            # 推送成功，更新订阅状态为True（无论之前状态如何）
+            SubscribeMessage.objects.update_or_create(
+                user=guardian,
+                template_id=template_id,
+                defaults={
+                    'subscribe_status': True
+                    # updated_at 字段使用 auto_now=True，Django会自动更新，无需手动设置
+                }
+            )
             logger.info(f'成功发送警报推送: 设备={device_id}, 类型={alert_type}, 监护人={guardian.username}, openid={guardian.openid[:10]}...')
         else:
             errcode = result.get('errcode')
             errmsg = result.get('error', '未知错误')
+            need_resubscribe = result.get('need_resubscribe', False)
             
-            if errcode in [43101, 43104]:
+            # 45009: 频率限制（同一用户同一模板每天最多发送一次）
+            # 这是微信订阅消息的限制，需要用户重新订阅才能再次发送
+            if errcode == 45009 or need_resubscribe:
+                logger.warning(f'用户 {guardian.username} 订阅消息频率限制 (errcode={errcode}, errmsg={errmsg})，需要重新订阅才能继续接收推送')
+                # 不更新订阅状态，因为用户仍然订阅，只是需要重新授权
+            # 只有在明确返回43101（用户未订阅）或43104（用户拒绝接收）时才标记为False
+            elif errcode is not None and errcode in [43101, 43104]:
+                # 用户明确未订阅或拒绝接收，标记为False
                 SubscribeMessage.objects.update_or_create(
                     user=guardian,
                     template_id=template_id,
-                    defaults={'subscribe_status': False}
+                    defaults={
+                        'subscribe_status': False
+                        # updated_at 字段使用 auto_now=True，Django会自动更新，无需手动设置
+                    }
                 )
-                logger.warning(f'用户 {guardian.username} 未订阅或拒绝接收消息 (errcode={errcode}, errmsg={errmsg})，请提醒用户重新订阅')
+                logger.warning(f'用户 {guardian.username} 未订阅或拒绝接收消息 (errcode={errcode}, errmsg={errmsg})，已标记为未订阅，请提醒用户重新订阅')
             else:
-                logger.warning(f'发送警报推送失败: 设备={device_id}, 类型={alert_type}, 监护人={guardian.username}, errcode={errcode}, errmsg={errmsg}')
+                # 其他错误（网络错误、token过期等）不更新订阅状态
+                # 因为这些错误可能是临时的，订阅状态仍然有效
+                logger.warning(f'发送警报推送失败（非订阅错误）: 设备={device_id}, 类型={alert_type}, 监护人={guardian.username}, errcode={errcode}, errmsg={errmsg}，订阅状态保持不变')
         
     except Device.DoesNotExist:
         logger.error(f'设备不存在: device_id={device_id}')

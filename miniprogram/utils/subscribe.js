@@ -56,7 +56,10 @@ async function subscribeMessage(alertType, options = {}) {
                 subscribe_status: subscribeStatus
               }
             });
-          } catch (err) {}
+          } catch (err) {
+            // 静默失败，不影响用户操作
+            console.error('订阅状态更新失败:', err);
+          }
           
           if (subscribeStatus && options.showToast !== false) {
             wx.showToast({
@@ -104,7 +107,10 @@ async function subscribeAllAlerts(options = {}) {
                 template_id: templateId,
                 subscribe_status: subscribeStatus
               }
-            }).catch(() => {});
+            }).catch((err) => {
+              // 静默失败，不影响整体流程
+              console.error('订阅状态更新失败:', err);
+            });
           });
           
           await Promise.all(promises);

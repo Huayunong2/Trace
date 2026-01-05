@@ -22,17 +22,23 @@ class DeviceViewSet(viewsets.ModelViewSet):
             # 2. 自己创建的设备（created_by = user），即使设备被监护人绑定到其他档案
             # 注意：如果数据库还没有 created_by 字段，会回退到只使用 elderly__user 查询
             try:
-                # 尝试使用包含 created_by 的完整查询
-                devices = Device.objects.filter(
+                # 尝试使用包含 created_by 的完整查询，使用select_related优化
+                devices = Device.objects.select_related(
+                    'elderly', 'elderly__user', 'elderly__guardian', 'created_by'
+                ).filter(
                     models.Q(elderly__user=user) | models.Q(created_by=user)
                 ).distinct()
             except Exception:
                 # 如果查询失败（数据库字段可能不存在），回退到只使用 elderly__user
-                devices = Device.objects.filter(elderly__user=user)
+                devices = Device.objects.select_related(
+                    'elderly', 'elderly__user', 'elderly__guardian'
+                ).filter(elderly__user=user)
         else:
             # 监护人角色：查看自己管理的老人设备（elderly.guardian = user）
             elderly_profiles = ElderlyProfile.objects.filter(guardian=user)
-            devices = Device.objects.filter(elderly__in=elderly_profiles)
+            devices = Device.objects.select_related(
+                'elderly', 'elderly__user', 'elderly__guardian', 'created_by'
+            ).filter(elderly__in=elderly_profiles)
         
         device_id = self.request.query_params.get('device_id')
         if device_id:

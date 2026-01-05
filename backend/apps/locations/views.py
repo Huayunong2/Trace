@@ -26,7 +26,10 @@ class LocationViewSet(viewsets.ReadOnlyModelViewSet):
             elderly_profiles = ElderlyProfile.objects.filter(guardian=user)
             devices = Device.objects.filter(elderly__in=elderly_profiles)
         
-        queryset = Location.objects.filter(device__in=devices)
+        # 使用select_related优化查询，减少N+1问题
+        queryset = Location.objects.select_related(
+            'device', 'device__elderly', 'device__elderly__guardian'
+        ).filter(device__in=devices)
         
         days = self.request.query_params.get('days')
         if days:

@@ -181,7 +181,10 @@ class SubscribeMessageViewSet(viewsets.ModelViewSet):
             subscribe_msg, created = SubscribeMessage.objects.update_or_create(
                 user=request.user,
                 template_id=template_id,
-                defaults={'subscribe_status': subscribe_status}
+                defaults={
+                    'subscribe_status': subscribe_status
+                    # updated_at 字段使用 auto_now=True，Django会自动更新，无需手动设置
+                }
             )
             
             return Response({
@@ -193,6 +196,59 @@ class SubscribeMessageViewSet(viewsets.ModelViewSet):
             logger.error(f'订阅消息失败: {e}', exc_info=True)
             return Response({
                 'error': f'订阅消息失败: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=False, methods=['post'])
+    def reset_status(self, request):
+        """重置订阅状态为True（用于重新订阅）"""
+        from .models import SubscribeMessage
+        from django.conf import settings
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        
+        try:
+            template_id = request.data.get('template_id')
+            
+            # 如果没有指定template_id，重置所有模板的订阅状态
+            if template_id:
+                subscribe_msg, created = SubscribeMessage.objects.update_or_create(
+                    user=request.user,
+                    template_id=template_id,
+                    defaults={
+                        'subscribe_status': True
+                        # updated_at 字段使用 auto_now=True，Django会自动更新，无需手动设置
+                    }
+                )
+                return Response({
+                    'message': f'订阅状态已重置: {template_id}',
+                    'template_id': template_id,
+                    'subscribe_status': True
+                })
+            else:
+                # 重置所有模板的订阅状态
+                template_map = settings.WECHAT_SUBSCRIBE_TEMPLATES
+                count = 0
+                for alert_type, tpl_id in template_map.items():
+                    if tpl_id:
+                        SubscribeMessage.objects.update_or_create(
+                            user=request.user,
+                            template_id=tpl_id,
+                            defaults={
+                                'subscribe_status': True
+                                # updated_at 字段使用 auto_now=True，Django会自动更新，无需手动设置
+                            }
+                        )
+                        count += 1
+                
+                return Response({
+                    'message': f'已重置 {count} 个模板的订阅状态',
+                    'count': count
+                })
+        except Exception as e:
+            logger.error(f'重置订阅状态失败: {e}', exc_info=True)
+            return Response({
+                'error': f'重置订阅状态失败: {str(e)}'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
