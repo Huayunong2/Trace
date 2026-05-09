@@ -15,7 +15,8 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # 项目路径
-PROJECT_DIR="/root/Project"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="${SCRIPT_DIR}"
 BACKEND_DIR="${PROJECT_DIR}/backend"
 MINIPROGRAM_DIR="${PROJECT_DIR}/miniprogram"
 
